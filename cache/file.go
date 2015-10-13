@@ -56,3 +56,15 @@ func (fc *FileCache) Bytes() []byte {
 
 	return bytes
 }
+
+// Stale returns whether or not the cache is stale for the given TTL.
+func (fc *FileCache) Stale() bool {
+	_, err := os.Stat(fc.cachePath)
+
+	return os.IsNotExist(err)
+}
+
+// Expire clears the cache.
+func (fc *FileCache) Expire() {
+	_ = os.Remove(fc.cachePath)
+}

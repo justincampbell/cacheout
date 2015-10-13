@@ -3,7 +3,9 @@ package cache
 
 // Cache is the interface that each cache implementation must implement.
 type Cache interface {
-	Write([]byte) (int, error)
-	Persist() error
 	Bytes() []byte
+	Expire()
+	Persist() error
+	Stale() bool
+	Write([]byte) (int, error)
 }
