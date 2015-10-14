@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"syscall"
 	"time"
 
 	"github.com/justincampbell/cacheout/cache"
@@ -46,7 +47,14 @@ func main() {
 			log.Fatal(err)
 		}
 
-		_ = cmd.Wait()
+		err = cmd.Wait()
+		if exiterr, ok := err.(*exec.ExitError); ok {
+			if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
+				os.Exit(status.ExitStatus())
+			} else {
+				log.Fatal(err)
+			}
+		}
 
 		fc.Persist()
 	} else {

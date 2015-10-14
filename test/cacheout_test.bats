@@ -6,3 +6,10 @@ load test_helper
   [ "$output" = "hello" ]
   [ $status -eq 0 ]
 }
+
+@test "passes through exit codes" {
+  run $cacheout 1m test/fixtures/exit123.sh
+
+  [ "$output" = "" ]
+  [ $status -eq 123 ]
+}
