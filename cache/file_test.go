@@ -2,13 +2,15 @@ package cache
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func Test_FileCache(t *testing.T) {
 	key := "abc123"
-	fc := NewFileCache(key)
+	ttl, _ := time.ParseDuration("1m")
+	fc := NewFileCache(key, &ttl)
 
 	// Check that FileCache implements the Cache interface
 	var _ Cache = fc
@@ -35,14 +37,21 @@ func Test_FileCache(t *testing.T) {
 	assert.Equal(t, bytes, fc.Bytes())
 
 	// Read from another cache with the same key
-	fc = NewFileCache(key)
+	fc = NewFileCache(key, &ttl)
 	assert.Equal(t, bytes, fc.Bytes())
 
-	// Expire
+	// Expire should make a cache stale and empty
 	fc.Expire()
 	assert.True(t, fc.Stale())
 	assert.Equal(t, []byte{}, fc.Bytes())
 
 	// A new cache should be empty
-	assert.Equal(t, []byte{}, NewFileCache("anotherkey").Bytes())
+	assert.Equal(t, []byte{}, NewFileCache("anotherkey", &ttl).Bytes())
+
+	// A cache with a 0 TTL is always stale
+	ttl, _ = time.ParseDuration("0")
+	fc = NewFileCache(key, &ttl)
+	err = fc.Persist()
+	assert.Nil(t, err)
+	assert.True(t, fc.Stale())
 }

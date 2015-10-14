@@ -6,11 +6,13 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"time"
 )
 
 // FileCache is a Cache implementation which caches to the filesystem.
 type FileCache struct {
 	Key string
+	TTL *time.Duration
 
 	buffer    *bytes.Buffer
 	cachePath string
@@ -23,9 +25,10 @@ const (
 
 // NewFileCache returns a FileCache with an empty buffer and precomputed cache
 // path based on the key.
-func NewFileCache(key string) *FileCache {
+func NewFileCache(key string, ttl *time.Duration) *FileCache {
 	return &FileCache{
 		Key:       key,
+		TTL:       ttl,
 		buffer:    bytes.NewBuffer([]byte{}),
 		cachePath: path.Join(os.TempDir(), fmt.Sprintf("%s.%s", prefix, key)),
 	}
@@ -59,9 +62,9 @@ func (fc *FileCache) Bytes() []byte {
 
 // Stale returns whether or not the cache is stale for the given TTL.
 func (fc *FileCache) Stale() bool {
-	_, err := os.Stat(fc.cachePath)
+	stat, err := os.Stat(fc.cachePath)
 
-	return os.IsNotExist(err)
+	return os.IsNotExist(err) || time.Since(stat.ModTime()) > *fc.TTL
 }
 
 // Expire clears the cache.
