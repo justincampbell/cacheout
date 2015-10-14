@@ -4,4 +4,5 @@ setup() {
 
 teardown() {
   echo $output
+  echo exit $status
 }

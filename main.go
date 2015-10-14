@@ -32,17 +32,22 @@ func main() {
 	if fc.Stale() {
 		cmd := exec.Command(bin, args...)
 
-		output, err := cmd.CombinedOutput()
+		stdout, err := cmd.StdoutPipe()
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		_, err = os.Stdout.Write(output)
+		if err := cmd.Start(); err != nil {
+			log.Fatal(err)
+		}
+
+		_, err = io.Copy(os.Stdout, io.TeeReader(stdout, fc))
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fc.Write(output)
+		_ = cmd.Wait()
+
 		fc.Persist()
 	} else {
 		_, err = os.Stdout.Write(fc.Bytes())

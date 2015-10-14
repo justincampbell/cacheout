@@ -4,4 +4,5 @@ load test_helper
   run $cacheout 1m echo hello
 
   [ "$output" = "hello" ]
+  [ $status -eq 0 ]
 }
