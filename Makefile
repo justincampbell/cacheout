@@ -8,7 +8,7 @@ TAG=v$(VERSION)
 ARCHIVE=$(NAME)-$(TAG).tar.gz
 ARCHIVE_URL=$(HOMEPAGE)/archive/$(TAG).tar.gz
 
-test: unit acceptance
+test: unit acceptance lint
 
 release: tag sha
 
@@ -42,6 +42,10 @@ build: dependencies
 
 unit: dependencies
 	go test ./...
+
+lint: dependencies
+	@which -s gometalinter || (go get github.com/alecthomas/gometalinter && gometalinter --install)
+	gometalinter
 
 dependencies:
 	go get -t
