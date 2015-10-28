@@ -14,6 +14,14 @@ load test_helper
   [ $status -eq 123 ]
 }
 
+@test "exposes environment variables to the command" {
+  export FOO=bar
+  run $cacheout 1m test/fixtures/echo_foo.sh
+
+  [ "$output" = "bar" ]
+  [ $status -eq 0 ]
+}
+
 @test "no arguments shows help" {
   run $cacheout
 
