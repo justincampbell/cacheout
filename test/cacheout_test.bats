@@ -13,3 +13,17 @@ load test_helper
   [ "$output" = "" ]
   [ $status -eq 123 ]
 }
+
+@test "no arguments shows help" {
+  run $cacheout
+
+  echo $output | grep "cacheout"
+  [ $status -eq 1 ]
+}
+
+@test "not enough arguments shows help" {
+  run $cacheout 1m
+
+  echo $output | grep "cacheout"
+  [ $status -eq 1 ]
+}
