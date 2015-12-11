@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"syscall"
 	"time"
 
@@ -19,7 +20,9 @@ usage: cacheout [duration] [command]
 example durations: 5s 15m 1h30m
 `
 
-// A Command holds the parsed input argument from the user
+const version = "v1.0.0"
+
+// A Command holds the parsed input from the user
 type Command struct {
 	key  string
 	ttl  time.Duration
@@ -28,13 +31,20 @@ type Command struct {
 }
 
 func init() {
+	flag.Usage = func() {
+		fmt.Printf("cacheout %s\n", version)
+		fmt.Printf("%s\n", strings.TrimSpace(usage))
+		flag.PrintDefaults()
+	}
+
 	flag.Parse()
 }
 
 func main() {
 	command, err := parseArgs(flag.Args())
 	if err != nil {
-		fmt.Printf("%s%s", err, usage)
+		fmt.Printf("%s\n", err)
+		flag.Usage()
 		os.Exit(1)
 	}
 
