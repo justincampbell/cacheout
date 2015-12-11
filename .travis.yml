@@ -1,0 +1,35 @@
+language: go
+
+sudo: false
+
+go:
+  - 1.5
+  - tip
+
+matrix:
+  allow_failures:
+    - go: tip
+
+install:
+  - go get -t
+
+before_script:
+  - git clone --depth 1 https://github.com/sstephenson/bats.git
+  - export PATH=$PATH:bats/bin
+
+before_deploy:
+  - go get github.com/mitchellh/gox
+  - mkdir -p release/
+  - cd release/
+  - gox ../...
+
+deploy:
+  provider: releases
+  api_key:
+    secure: MzBXdVD+uzgRu2jFtbAbKfq4VDYTm8on0cJKmaXnax/69Vz5OTY+TrgTNav02T3+SWvsGw0EWcwDxpRhtetZy3YoVRjUc814uPN01E0gGmaUaOKT/3Zs3X4d+C7z4JlkwuJMPn4A5WP542p07i7U8ulOOVSJ7a/334bCgRoSdI9sz27ORO79K/iJeIZQ2XmTnG6L98+wCl/P7vPbL61eLXFoy3209iCaJlUtk3yIRcbN2hWLr8gjaxoxE9U46UyaWV61ybJ8vhaQX0qt8Fs+cptG4kKG0RuWF+GuPodwvL3jIwo/Y/uMrEBaBI94xP4/uJKj6Z2t/VZCfBnIm76osDccIJCJEdIXMa9uBkP9BkixZ5KMEOJPsJqIHb8saQTTuRxHYl5jDqoQcgW9bS0HazJFZ7LBEtNaUUgdUTin5vo08NRZTJVYKtwTdFbayxEx7/ADQA2NJWMtivH3GU3HzgZP25WuW84BgPZnIKPZSDUCopk1RBDFypIf66DKJvTL93OPKQfPoNOBFtkSjYJ9SnIKJijEy4TpksOzVPlksYf3OJ4DSMUfdbnIoaS/3yspvzsr+5q7Ir7AJwbariWUfgv7r6G5xFSzCq5aM2tK9TEL7S/FDNpdbOgCLmxhP/cQ2Ni4wn6U4RcQR/Rr1rK8d0uTW+BhjHjoH7k4j0nwvyo=
+  file: cacheout*
+  file_glob: true
+  skip_cleanup: true
+  on:
+    repo: justincampbell/cacheout
+    tags: true
