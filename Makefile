@@ -12,7 +12,7 @@ unit: dependencies
 	go test ./...
 
 lint: dependencies
-	@which -s gometalinter || (go get github.com/alecthomas/gometalinter && gometalinter --install)
+	@which gometalinter || (go get github.com/alecthomas/gometalinter && gometalinter --install)
 	gometalinter
 
 dependencies:
