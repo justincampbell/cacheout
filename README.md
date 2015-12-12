@@ -4,9 +4,9 @@
 
 ## Installation
 
-1. Download the latest binary for your platform from the [Releases page](https://github.com/justincampbell/cacheout/releases/latest).
-2. Rename the file to `cacheout`.
-3. Place the file into a directory in your `$PATH` (for most systems, this will be `/usr/local/bin/`).
+1. Download the latest package for your platform from the [Releases page](https://github.com/justincampbell/cacheout/releases/latest).
+2. Untar the package with `tar -zxvf cachout*.tar.gz`.
+3. Move the extracted `cacheout` file to a directory in your `$PATH` (for most systems, this will be `/usr/local/bin/`).
 
 Or, if you have a [Go development environment](https://golang.org/doc/install):
 

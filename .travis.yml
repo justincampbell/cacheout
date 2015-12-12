@@ -21,7 +21,8 @@ before_deploy:
   - go get github.com/mitchellh/gox
   - mkdir -p release/
   - cd release/
-  - gox ../...
+  - gox -os "darwin linux" ../...
+  - for f in `ls`; do mv $f cacheout; tar -zcvf $f.tar.gz cacheout; rm cacheout; done
 
 deploy:
   provider: releases
