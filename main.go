@@ -36,11 +36,11 @@ func init() {
 		fmt.Printf("%s\n", strings.TrimSpace(usage))
 		flag.PrintDefaults()
 	}
-
-	flag.Parse()
 }
 
 func main() {
+	flag.Parse()
+
 	command, err := parseArgs(flag.Args())
 	if err != nil {
 		fmt.Printf("%s\n", err)
