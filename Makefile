@@ -1,21 +1,18 @@
 NAME := cacheout
 
-test: unit acceptance lint
+test: unit acceptance
 
 acceptance: build
 	bats test
 
-build: dependencies
+build:
 	go build -o bin/$(NAME)
 
-unit: dependencies
+unit:
 	go test ./...
 
-lint: dependencies
-	@which gometalinter || (go get github.com/alecthomas/gometalinter && gometalinter --install)
-	gometalinter
+lint:
+	@which golangci-lint || go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	golangci-lint run
 
-dependencies:
-	go get -t
-
-.PHONY: acceptance build dependencies lint test unit
+.PHONY: acceptance build lint test unit

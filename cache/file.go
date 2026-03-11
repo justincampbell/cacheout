@@ -3,7 +3,6 @@ package cache
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"time"
@@ -42,7 +41,7 @@ func (fc *FileCache) Write(bytes []byte) (int, error) {
 // Persist stores the internal buffer to the cache file. The file is emptied if
 // it already exists.
 func (fc *FileCache) Persist() error {
-	return ioutil.WriteFile(
+	return os.WriteFile(
 		fc.cachePath,
 		fc.buffer.Bytes(),
 		fileMode,
@@ -52,7 +51,7 @@ func (fc *FileCache) Persist() error {
 // Bytes returns the bytes from the cache file, or an empty byte array if the
 // cache file does not exist.
 func (fc *FileCache) Bytes() []byte {
-	bytes, err := ioutil.ReadFile(fc.cachePath)
+	bytes, err := os.ReadFile(fc.cachePath)
 	if err != nil {
 		return []byte{}
 	}
@@ -64,7 +63,7 @@ func (fc *FileCache) Bytes() []byte {
 func (fc *FileCache) Stale() bool {
 	stat, err := os.Stat(fc.cachePath)
 
-	return os.IsNotExist(err) || time.Since(stat.ModTime()) > *fc.TTL
+	return err != nil || time.Since(stat.ModTime()) > *fc.TTL
 }
 
 // Expire clears the cache.

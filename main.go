@@ -89,7 +89,7 @@ func hashCommand(command []string) string {
 	h := md5.New()
 
 	for _, part := range command {
-		_, err := io.WriteString(h, part)
+		_, err := io.WriteString(h, part+"\x00")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -119,9 +119,10 @@ func (command *Command) execAndCache(cache cache.Cache) error {
 	if exiterr, ok := err.(*exec.ExitError); ok {
 		if status, ok := exiterr.Sys().(syscall.WaitStatus); ok {
 			os.Exit(status.ExitStatus())
-		} else {
-			return err
 		}
+		return err
+	} else if err != nil {
+		return err
 	}
 
 	return cache.Persist()
