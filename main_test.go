@@ -25,7 +25,7 @@ func Test_parseArgs_not_enough(t *testing.T) {
 func Test_parseArgs_invalid_duration(t *testing.T) {
 	command, err := parseArgs([]string{"0", "echo"})
 	assert.Nil(t, err)
-	assert.Equal(t, "0", command.ttl.String())
+	assert.Equal(t, "0s", command.ttl.String())
 
 	_, err = parseArgs([]string{"1", "echo"})
 	assert.Contains(t, err.Error(), "missing unit")
